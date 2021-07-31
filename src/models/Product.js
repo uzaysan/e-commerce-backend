@@ -1,18 +1,10 @@
 const database = require("../controllers/DatabaseController").database;
 const products = database.collection("Product");
-const Query = require("../util/Query");
+const Query = require("../Query");
+const { generateObjectId } = require("../util/ObjectIdUtils");
 
 class Product {
-  constructor(product, isNew = false) {
-    if (isNew) {
-      if (!product._id) throw "_id field is required for product";
-      if (!product.title) throw "title field is required for product";
-      if (!product.description)
-        throw "description field is required for product";
-      if (!product.category) throw "category field is required for product";
-      if (!product.price) throw "price field is required for product";
-      if (!product.image) throw "image field is required for product";
-    }
+  constructor(product) {
     if (product._id) this._id = product._id;
     if (product.title) this.title = product.title;
     if (product.description) this.description = product.description;
@@ -45,14 +37,21 @@ class Product {
     this.image = image;
   }
 
-  save(isNew = false) {
-    if (isNew) return products.insertOne(this);
+  save() {
+    if (!this._id)
+      return products.insertOne({ ...this, _id: generateObjectId() });
     else {
       const filter = { _id: this._id };
       const options = { upsert: false };
       const updateDoc = { $set: { ...this } };
       return products.updateOne(filter, updateDoc, options);
     }
+  }
+
+  delete() {
+    if (!this._id) throw `Can't delete object without objectId`;
+    const query = { _id: this._id };
+    return products.deleteOne(query);
   }
 
   static getQuery() {

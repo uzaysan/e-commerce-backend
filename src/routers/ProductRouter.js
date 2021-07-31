@@ -5,12 +5,15 @@ const {
   addProduct,
   editProduct,
   getProduct,
+  deleteProduct,
 } = require("../controllers/ProductController");
 
-route.post("/addProduct", addProduct);
+route.post("/", addProduct);
 
-route.post("/editProduct/:objectId", editProduct);
+route.put("/:objectId", editProduct);
 
 route.get("/:objectId", getProduct);
+
+route.delete("/:objectId", deleteProduct);
 
 module.exports = route;
