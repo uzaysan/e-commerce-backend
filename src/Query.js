@@ -6,9 +6,8 @@ class Query {
     this.query = {};
   }
 
-  findWithId(_id) {
+  findWithId(_id, options = {}) {
     const query = { _id: _id };
-    const options = {};
     return this.collection.findOne(query, options);
   }
 
@@ -16,8 +15,8 @@ class Query {
     this.query[key] = value;
   }
 
-  find() {
-    return this.collection.findOne(this.query, {});
+  find(options = {}) {
+    return this.collection.findOne(this.query, options);
   }
 }
 

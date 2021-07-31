@@ -1,13 +1,24 @@
 const Product = require("../models/Product");
-const { mongoErrorConverter } = require("../util/ErrorHandler");
+const Session = require("../models/Session");
 
 const addProduct = (req, res) => {
-  const { headers, body, params } = req;
+  const { headers, body } = req;
   if (body._id) {
     throw `_id field is auto generated and must be removed from request body!`;
   }
-  new Product(body)
-    .save()
+  if (!params.objectId) {
+    throw `_id field necessary to edit an existing object`;
+  }
+  const token = headers["x-session-token"];
+  if (!token) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+  Session.getUserFromToken(token)
+    .then((fetchedUser) => {
+      if (!fetchedUser || !fetchedUser._id) throw "Unauthorized";
+      return new Product({ ...body, user: fetchedUser._id }).save();
+    })
     .then((result) => res.send(result))
     .catch((err) => res.status(500).send(err));
 };
@@ -17,18 +28,26 @@ const editProduct = (req, res) => {
   if (!params.objectId) {
     throw `_id field necessary to edit an existing object`;
   }
-  new Product({ ...body, _id: params.objectId })
-    .save()
-    .then((result) => {
-      if (result.matchedCount === 0) {
-        const error = mongoErrorConverter({ code: 1 });
-        res.status(error.status).send(error);
-      }
-      res.send(result);
+  const token = headers["x-session-token"];
+  if (!token) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+  let user;
+  let product;
+  Session.getUserFromToken(token)
+    .then((fetchedUser) => {
+      if (!fetchedUser || !fetchedUser._id) throw "Unauthorized";
+      user = fetchedUser;
+      return Product.getQuery().findWithId(params.objectId);
     })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
+    .then((fetchedProduct) => {
+      product = fetchedProduct;
+      if (fetchedProduct.user !== user._id) throw "Unauthorized";
+      return new Product({ ...body, _id: params.objectId }).save();
+    })
+    .then(() => res.send({ ...product, ...body }))
+    .catch((err) => res.status(500).send(err));
 };
 
 const getProduct = (req, res) => {
@@ -38,8 +57,8 @@ const getProduct = (req, res) => {
   }
   Product.getQuery()
     .findWithId(params.objectId)
-    .then((result) => {
-      res.send(result);
+    .then((product) => {
+      res.send(product);
     })
     .catch((err) => {
       res.status(500).send(err);
@@ -49,12 +68,25 @@ const getProduct = (req, res) => {
 const deleteProduct = (req, res) => {
   const { params } = req;
   if (!params.objectId) {
-    throw `_id field necessary to delete an object`;
+    throw `_id field necessary to edit an existing object`;
   }
-
-  new Product({ _id: params.objectId })
-    .delete()
-    .then((result) => res.send(result))
+  const token = headers["x-session-token"];
+  if (!token) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+  let user;
+  Session.getUserFromToken(token)
+    .then((fetchedUser) => {
+      if (!fetchedUser || !fetchedUser._id) throw "Unauthorized";
+      user = fetchedUser;
+      return Product.getQuery().findWithId(params.objectId);
+    })
+    .then((product) => {
+      if (product.user !== user._id) throw "Unauthorized";
+      return new Product({ _id: params.objectId }).delete();
+    })
+    .then(() => res.send("Item Deleted"))
     .catch((err) => res.status(500).send(err));
 };
 

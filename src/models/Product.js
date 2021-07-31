@@ -11,30 +11,7 @@ class Product {
     if (product.category) this.category = product.category;
     if (product.price) this.price = product.price;
     if (product.image) this.image = product.image;
-  }
-
-  setId(_id) {
-    this._id = _id;
-  }
-
-  setTitle(title) {
-    this.title = title;
-  }
-
-  setDescription(description) {
-    this.description = description;
-  }
-
-  setCategory(category) {
-    this.category = category;
-  }
-
-  setPrice(price) {
-    this.price = price;
-  }
-
-  setImage(image) {
-    this.image = image;
+    if (product.user) this.user = product.user;
   }
 
   save() {

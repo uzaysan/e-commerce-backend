@@ -38,8 +38,7 @@ class User {
           const session = new Session(token, user._id);
           return session.save();
         })
-        .then((result) => {
-          console.log("Result", result);
+        .then(() => {
           resolve({
             ...user,
             sessionToken: token,
@@ -53,18 +52,24 @@ class User {
   register() {
     return new Promise((resolve, reject) => {
       const user = { ...this, _id: generateObjectId() };
+      let token;
       Auth.encryptPassword(user.password)
         .then((encryptedPassword) => {
-          console.log("encrypted pass", encryptedPassword);
           user.password = encryptedPassword;
-          users
-            .insertOne(user)
-            .then((result) => {
-              resolve(result);
-            })
-            .catch((err) => {
-              reject(err);
-            });
+          return users.insertOne(user);
+        })
+        .then(() => generateSessionToken())
+        .then((generatedToken) => {
+          token = generatedToken;
+          const session = new Session(token, user._id);
+          return session.save();
+        })
+        .then(() => {
+          resolve({
+            ...user,
+            sessionToken: token,
+            password: undefined,
+          });
         })
         .catch((err) => {
           reject(err);
