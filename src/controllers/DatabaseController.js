@@ -1,14 +1,20 @@
 const MongoClient = require("mongodb").MongoClient;
-const DATABASE_URI = require("../../keys").DATABASE_URI;
+const { DATABASE_URI, DATABASE_NAME } = require("../../keys");
 
 const client = new MongoClient(DATABASE_URI);
+const database = client.db(DATABASE_NAME);
 
-const connect = async () => {
-  await client.connect();
-  console.log("Connected to database.");
+const connect = async (callback) => {
+  try {
+    await client.connect();
+    console.log("Connected to database.");
+    callback(null);
+  } catch (err) {
+    callback(err);
+  }
 };
 
 module.exports = {
-  client,
+  database,
   connect,
 };
