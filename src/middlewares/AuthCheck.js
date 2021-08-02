@@ -1,6 +1,6 @@
-const Session = require("../models/Session");
+import Session from "../models/Session.js";
 
-const authCheck = (req, res, next) => {
+export const authCheck = (req, res, next) => {
   const sessionToken = req.headers["x-session-token"];
   if (!sessionToken) {
     req.isLoggedIn = false;
@@ -17,5 +17,3 @@ const authCheck = (req, res, next) => {
       res.status(500).send({ message: `Invalid Session Token231`, err: err })
     );
 };
-
-module.exports = authCheck;
