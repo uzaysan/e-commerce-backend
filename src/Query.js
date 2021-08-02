@@ -18,7 +18,7 @@ export default class Query {
   }
 
   setLimit(number) {
-    this.limit = parseInt(number);
+    this.limit = parseInt(number || 100);
   }
 
   sortBy(key, direction) {

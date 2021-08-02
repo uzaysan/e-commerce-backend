@@ -19,14 +19,13 @@ export const addItemToCart = (req, res) => {
 
 export const getCartItems = (req, res) => {
   const { body, isLoggedIn, loggedInUser } = req;
-  const validatedBody = Validator.cartItemValidator(body);
   if (!isLoggedIn) {
     res.status(401).send("Unauthorized");
     return;
   }
   const query = CartItem.getQuery();
   query.equalTo("user", loggedInUser._id);
-  query.setLimit(1000);
+  query.setLimit(body.limit);
   query
     .find()
     .then((results) => res.send(results))
