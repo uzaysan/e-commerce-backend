@@ -1,4 +1,4 @@
-const bcrypt = require("@node-rs/bcrypt");
+import bcrypt from "@node-rs/bcrypt";
 const cost = 10;
 
 class Auth {
@@ -11,4 +11,4 @@ class Auth {
   }
 }
 
-module.exports = Auth;
+export default Auth;

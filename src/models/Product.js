@@ -1,9 +1,9 @@
-const database = require("../controllers/DatabaseController").database;
+import { database } from "../controllers/DatabaseController.js";
 const products = database.collection("Product");
-const Query = require("../Query");
-const { generateObjectId } = require("../util/ObjectIdUtils");
+import Query from "../Query.js";
+import { generateObjectId } from "../util/ObjectIdUtils.js";
 
-class Product {
+export default class Product {
   constructor(product) {
     if (product._id) this._id = product._id;
     if (product.title) this.title = product.title;
@@ -11,7 +11,7 @@ class Product {
     if (product.category) this.category = product.category;
     if (product.price) this.price = product.price;
     if (product.image) this.image = product.image;
-    if (product.user) this.user = product.user;
+    if (product.user) this.user = product.user._id;
   }
 
   save() {
@@ -34,5 +34,3 @@ class Product {
     return new Query("Product");
   }
 }
-
-module.exports = Product;

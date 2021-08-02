@@ -1,12 +1,12 @@
-const database = require("../controllers/DatabaseController").database;
+import { database } from "../controllers/DatabaseController.js";
 const users = database.collection("User");
-const Query = require("../Query");
-const Auth = require("../Auth");
-const Session = require("../models/Session");
-const { generateObjectId } = require("../util/ObjectIdUtils");
-const { generateSessionToken } = require("../util/SessionUtil");
+import Query from "../Query.js";
+import Auth from "../Auth.js";
+import Session from "../models/Session.js";
+import { generateObjectId } from "../util/ObjectIdUtils.js";
+import { generateSessionToken } from "../util/SessionUtil.js";
 
-class User {
+export default class User {
   constructor(user) {
     if (user._id) this._id = user._id;
     if (user.name) this.name = user.name;
@@ -35,7 +35,7 @@ class User {
         .then((generatedToken) => {
           console.log("Token", generatedToken);
           token = generatedToken;
-          const session = new Session(token, user._id);
+          const session = new Session(token, user);
           return session.save();
         })
         .then(() => {
@@ -61,7 +61,7 @@ class User {
         .then(() => generateSessionToken())
         .then((generatedToken) => {
           token = generatedToken;
-          const session = new Session(token, user._id);
+          const session = new Session(token, user);
           return session.save();
         })
         .then(() => {
@@ -81,5 +81,3 @@ class User {
     return new Query("User");
   }
 }
-
-module.exports = User;

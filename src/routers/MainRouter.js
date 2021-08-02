@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const productRouter = require("../routers/ProductRouter");
-const authRouter = require("../routers/AuthRouter");
-const userRouter = require("../routers/UserRouter");
-const cartItemRouter = require("../routers/CartItemRouter");
+import productRouter from "../routers/ProductRouter.js";
+import authRouter from "../routers/AuthRouter.js";
+import userRouter from "../routers/UserRouter.js";
+import cartItemRouter from "../routers/CartItemRouter.js";
 
-const authCheck = require("../middlewares/AuthCheck");
+import { authCheck } from "../middlewares/AuthCheck.js";
 
 router.use(authCheck);
 
@@ -22,4 +22,4 @@ router.use("/user", userRouter);
 
 router.use("/cartitem", cartItemRouter);
 
-module.exports = router;
+export default router;

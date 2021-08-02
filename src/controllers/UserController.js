@@ -1,6 +1,6 @@
-const User = require("../models/User");
+import User from "../models/User.js";
 
-const getUser = (req, res) => {
+export const getUser = (req, res) => {
   const { params } = req;
   if (!params.objectId) {
     throw `_id field necessary to get a user`;
@@ -9,8 +9,4 @@ const getUser = (req, res) => {
     .findWithId(params.objectId)
     .then((user) => res.send(user))
     .catch((err) => res.status(500).send(err));
-};
-
-module.exports = {
-  getUser,
 };

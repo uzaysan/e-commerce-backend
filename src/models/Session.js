@@ -1,16 +1,16 @@
-const database = require("../controllers/DatabaseController").database;
+import { database } from "../controllers/DatabaseController.js";
 const sessions = database.collection("Session");
-const Query = require("../Query");
-const User = require("../models/User");
-const { generateObjectId } = require("../util/ObjectIdUtils");
+import Query from "../Query.js";
+import User from "../models/User.js";
+import { generateObjectId } from "../util/ObjectIdUtils.js";
 
 const oneYear = 1000 * 60 * 60 * 24 * 365;
 
-class Session {
+export default class Session {
   constructor(token, user) {
     this._id = generateObjectId();
     this.token = token;
-    this.user = user;
+    this.user = user._id;
     this.expiresAt = new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     ).toISOString();
@@ -45,5 +45,3 @@ class Session {
     });
   }
 }
-
-module.exports = Session;

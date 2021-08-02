@@ -1,6 +1,6 @@
-const database = require("./controllers/DatabaseController").database;
+import { database } from "./controllers/DatabaseController.js";
 
-class Query {
+export default class Query {
   constructor(collection) {
     this.collection = database.collection(collection);
     this.query = {};
@@ -30,5 +30,3 @@ class Query {
     return this.collection.findOne(this.query, newOptions);
   }
 }
-
-module.exports = Query;

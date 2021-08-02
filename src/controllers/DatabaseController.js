@@ -1,10 +1,10 @@
-const MongoClient = require("mongodb").MongoClient;
-const { DATABASE_URI, DATABASE_NAME } = require("../../keys");
+import { MongoClient } from "mongodb";
+import { DATABASE_URI, DATABASE_NAME } from "../../keys.js";
 
 const client = new MongoClient(DATABASE_URI);
-const database = client.db(DATABASE_NAME);
+export const database = client.db(DATABASE_NAME);
 
-const connect = async (callback) => {
+export const connect = async (callback) => {
   try {
     await client.connect();
     console.log("Connected to database.");
@@ -12,9 +12,4 @@ const connect = async (callback) => {
   } catch (err) {
     callback(err);
   }
-};
-
-module.exports = {
-  database,
-  connect,
 };

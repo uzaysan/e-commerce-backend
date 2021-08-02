@@ -1,19 +1,19 @@
-const express = require("express");
-const compression = require("compression");
+import express, { urlencoded, json } from "express";
+import compression from "compression";
 
-const mainRouter = require("./src/routers/MainRouter");
-const connectDatabase = require("./src/controllers/DatabaseController").connect;
+import mainRouter from "./src/routers/MainRouter.js";
+import { connect } from "./src/controllers/DatabaseController.js";
 
 const app = express();
 const port = 3000;
 
 app.use(compression());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(urlencoded({ extended: true }));
+app.use(json());
 
 app.use("/api", mainRouter);
 
-connectDatabase((err) => {
+connect((err) => {
   if (err) {
     console.log("Failed to connect database!");
     return;

@@ -1,4 +1,4 @@
-class Validator {
+export default class Validator {
   static productValidator(body) {
     return {
       _id: body._id,
@@ -28,5 +28,3 @@ class Validator {
     };
   }
 }
-
-module.exports = Validator;

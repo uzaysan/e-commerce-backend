@@ -1,7 +1,7 @@
-const User = require("../models/User");
-const Validator = require("../util/Validator");
+import User from "../models/User.js";
+import Validator from "../util/Validator.js";
 
-const registerController = (req, res) => {
+export const registerController = (req, res) => {
   const { body } = req;
   const validatedBody = Validator.userValidator(body);
 
@@ -14,7 +14,7 @@ const registerController = (req, res) => {
     .catch((err) => res.status(500).send(err));
 };
 
-const loginController = (req, res) => {
+export const loginController = (req, res) => {
   const { body } = req;
 
   if (!body.email) throw "email is required";
@@ -22,9 +22,4 @@ const loginController = (req, res) => {
   User.login(body.email, body.password)
     .then((result) => res.send(result))
     .catch((err) => res.status(500).send(err));
-};
-
-module.exports = {
-  loginController,
-  registerController,
 };

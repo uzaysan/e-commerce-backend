@@ -1,9 +1,5 @@
-const Error = require("../Error");
+import Error from "../Error";
 
-const mongoErrorConverter = (err) => {
+export const mongoErrorConverter = (err) => {
   return new Error(err);
-};
-
-module.exports = {
-  mongoErrorConverter,
 };

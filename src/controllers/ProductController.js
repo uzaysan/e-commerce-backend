@@ -1,9 +1,9 @@
-const Product = require("../models/Product");
-const User = require("../models/User");
+import Product from "../models/Product.js";
+import User from "../models/User.js";
 
-const Validator = require("../util/Validator");
+import Validator from "../util/Validator.js";
 
-const addProduct = (req, res) => {
+export const addProduct = (req, res) => {
   const { body, isLoggedIn, loggedInUser } = req;
   const validatedBody = Validator.productValidator(body);
   if (validatedBody._id) {
@@ -22,9 +22,9 @@ const addProduct = (req, res) => {
     .catch((err) => res.status(500).send(err));
 };
 
-const editProduct = (req, res) => {
+export const editProduct = (req, res) => {
   const { body, params, isLoggedIn, loggedInUser } = req;
-  const validatedBody = Validator.productValidator(body);
+  const validatedBody = productValidator(body);
   if (!params.objectId) {
     throw `_id field necessary to edit an existing object`;
   }
@@ -44,13 +44,13 @@ const editProduct = (req, res) => {
     .catch((err) => res.status(500).send(err));
 };
 
-const getProduct = (req, res) => {
+export const getProduct = (req, res) => {
   const { params } = req;
   if (!params.objectId) {
     throw `_id field necessary to get an existing object`;
   }
   let product;
-  Product.getQuery()
+  getQuery()
     .findWithId(params.objectId)
     .then((fetchedProduct) => {
       if (!fetchedProduct) throw "Product doesnt exist!";
@@ -65,7 +65,7 @@ const getProduct = (req, res) => {
     });
 };
 
-const deleteProduct = (req, res) => {
+export const deleteProduct = (req, res) => {
   const { params, isLoggedIn, loggedInUser } = req;
   if (!params.objectId) {
     throw `_id field necessary to edit an existing object`;
@@ -75,7 +75,7 @@ const deleteProduct = (req, res) => {
     res.status(401).send("Unauthorized");
     return;
   }
-  return Product.getQuery()
+  return getQuery()
     .findWithId(params.objectId)
     .then((product) => {
       if (product.user !== loggedInUser._id) throw "Unauthorized";
@@ -83,11 +83,4 @@ const deleteProduct = (req, res) => {
     })
     .then(() => res.send("Item Deleted"))
     .catch((err) => res.status(500).send(err));
-};
-
-module.exports = {
-  addProduct,
-  editProduct,
-  getProduct,
-  deleteProduct,
 };
