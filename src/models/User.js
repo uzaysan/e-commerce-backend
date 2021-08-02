@@ -21,7 +21,7 @@ export default class User {
       const query = this.getQuery();
       query.equalTo("email", email);
       query
-        .find({ projection: { password: 1 } })
+        .findOne({ projection: { password: 1 } })
         .then((foundUser) => {
           console.log("User", foundUser);
           user = foundUser;

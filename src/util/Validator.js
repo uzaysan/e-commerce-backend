@@ -23,7 +23,7 @@ export default class Validator {
     return {
       _id: body._id,
       product: body.product,
-      count: body.count,
+      count: parseInt(body.count) || 1,
       user: body.user,
     };
   }

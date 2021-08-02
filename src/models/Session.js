@@ -29,7 +29,7 @@ export default class Session {
       const query = this.getQuery();
       query.equalTo("token", token);
       query
-        .find()
+        .findOne()
         .then((session) => {
           console.log("Session from token", session);
           const expiresAt = new Date(session.expiresAt);
