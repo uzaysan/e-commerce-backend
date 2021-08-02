@@ -1,5 +1,5 @@
 const express = require("express");
-const route = express.Router();
+const router = express.Router();
 
 const {
   addProduct,
@@ -8,12 +8,12 @@ const {
   deleteProduct,
 } = require("../controllers/ProductController");
 
-route.post("/", addProduct);
+router.post("/", addProduct);
 
-route.put("/:objectId", editProduct);
+router.put("/:objectId", editProduct);
 
-route.get("/:objectId", getProduct);
+router.get("/:objectId", getProduct);
 
-route.delete("/:objectId", deleteProduct);
+router.delete("/:objectId", deleteProduct);
 
-module.exports = route;
+module.exports = router;

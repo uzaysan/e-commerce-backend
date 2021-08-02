@@ -1,52 +1,46 @@
 const Product = require("../models/Product");
-const Session = require("../models/Session");
+const User = require("../models/User");
+
+const Validator = require("../util/Validator");
 
 const addProduct = (req, res) => {
-  const { headers, body } = req;
-  if (body._id) {
+  const { body, isLoggedIn, loggedInUser } = req;
+  const validatedBody = Validator.productValidator(body);
+  if (validatedBody._id) {
     throw `_id field is auto generated and must be removed from request body!`;
   }
-  if (!params.objectId) {
-    throw `_id field necessary to edit an existing object`;
-  }
-  const token = headers["x-session-token"];
-  if (!token) {
+  if (!isLoggedIn) {
     res.status(401).send("Unauthorized");
     return;
   }
-  Session.getUserFromToken(token)
-    .then((fetchedUser) => {
-      if (!fetchedUser || !fetchedUser._id) throw "Unauthorized";
-      return new Product({ ...body, user: fetchedUser._id }).save();
-    })
-    .then((result) => res.send(result))
+
+  new Product({ ...validatedBody, user: loggedInUser })
+    .save()
+    .then((result) =>
+      res.send({ ...validatedBody, user: loggedInUser, _id: result.insertedId })
+    )
     .catch((err) => res.status(500).send(err));
 };
 
 const editProduct = (req, res) => {
-  const { headers, body, params } = req;
+  const { body, params, isLoggedIn, loggedInUser } = req;
+  const validatedBody = Validator.productValidator(body);
   if (!params.objectId) {
     throw `_id field necessary to edit an existing object`;
   }
-  const token = headers["x-session-token"];
-  if (!token) {
+  if (!isLoggedIn) {
     res.status(401).send("Unauthorized");
     return;
   }
-  let user;
   let product;
-  Session.getUserFromToken(token)
-    .then((fetchedUser) => {
-      if (!fetchedUser || !fetchedUser._id) throw "Unauthorized";
-      user = fetchedUser;
-      return Product.getQuery().findWithId(params.objectId);
-    })
+  Product.getQuery()
+    .findWithId(params.objectId)
     .then((fetchedProduct) => {
       product = fetchedProduct;
-      if (fetchedProduct.user !== user._id) throw "Unauthorized";
-      return new Product({ ...body, _id: params.objectId }).save();
+      if (fetchedProduct.user !== loggedInUser._id) throw "Unauthorized";
+      return new Product({ ...validatedBody, _id: params.objectId }).save();
     })
-    .then(() => res.send({ ...product, ...body }))
+    .then(() => res.send({ ...product, ...validatedBody, user: loggedInUser }))
     .catch((err) => res.status(500).send(err));
 };
 
@@ -55,10 +49,16 @@ const getProduct = (req, res) => {
   if (!params.objectId) {
     throw `_id field necessary to get an existing object`;
   }
+  let product;
   Product.getQuery()
     .findWithId(params.objectId)
-    .then((product) => {
-      res.send(product);
+    .then((fetchedProduct) => {
+      if (!fetchedProduct) throw "Product doesnt exist!";
+      product = fetchedProduct;
+      return User.getQuery().findWithId(fetchedProduct.user);
+    })
+    .then((fetchedUser) => {
+      res.send({ ...product, user: fetchedUser });
     })
     .catch((err) => {
       res.status(500).send(err);
@@ -66,24 +66,19 @@ const getProduct = (req, res) => {
 };
 
 const deleteProduct = (req, res) => {
-  const { params } = req;
+  const { params, isLoggedIn, loggedInUser } = req;
   if (!params.objectId) {
     throw `_id field necessary to edit an existing object`;
   }
-  const token = headers["x-session-token"];
-  if (!token) {
+
+  if (!isLoggedIn) {
     res.status(401).send("Unauthorized");
     return;
   }
-  let user;
-  Session.getUserFromToken(token)
-    .then((fetchedUser) => {
-      if (!fetchedUser || !fetchedUser._id) throw "Unauthorized";
-      user = fetchedUser;
-      return Product.getQuery().findWithId(params.objectId);
-    })
+  return Product.getQuery()
+    .findWithId(params.objectId)
     .then((product) => {
-      if (product.user !== user._id) throw "Unauthorized";
+      if (product.user !== loggedInUser._id) throw "Unauthorized";
       return new Product({ _id: params.objectId }).delete();
     })
     .then(() => res.send("Item Deleted"))

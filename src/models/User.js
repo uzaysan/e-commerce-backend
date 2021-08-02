@@ -21,7 +21,7 @@ class User {
       const query = this.getQuery();
       query.equalTo("email", email);
       query
-        .find()
+        .find({ projection: { password: 1 } })
         .then((foundUser) => {
           console.log("User", foundUser);
           user = foundUser;

@@ -4,11 +4,17 @@ class Query {
   constructor(collection) {
     this.collection = database.collection(collection);
     this.query = {};
+    this.sort = {};
+    this.limit = 100;
+    if (collection === "User") this.projection = { password: 0, email: 0 };
   }
 
   findWithId(_id, options = {}) {
     const query = { _id: _id };
-    return this.collection.findOne(query, options);
+    const newOptions = {
+      projection: options.projection || this.projection,
+    };
+    return this.collection.findOne(query, newOptions);
   }
 
   equalTo(key, value) {
@@ -16,7 +22,12 @@ class Query {
   }
 
   find(options = {}) {
-    return this.collection.findOne(this.query, options);
+    const newOptions = {
+      sort: options.sort || this.sort,
+      //limit: options.limit || this.limit,
+      projection: options.projection || this.projection,
+    };
+    return this.collection.findOne(this.query, newOptions);
   }
 }
 

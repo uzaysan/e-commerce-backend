@@ -15,14 +15,13 @@ class Product {
   }
 
   save() {
-    if (!this._id)
+    if (!this._id) {
       return products.insertOne({ ...this, _id: generateObjectId() });
-    else {
-      const filter = { _id: this._id };
-      const options = { upsert: false };
-      const updateDoc = { $set: { ...this } };
-      return products.updateOne(filter, updateDoc, options);
     }
+    const filter = { _id: this._id };
+    const options = { upsert: false };
+    const updateDoc = { $set: { ...this } };
+    return products.updateOne(filter, updateDoc, options);
   }
 
   delete() {

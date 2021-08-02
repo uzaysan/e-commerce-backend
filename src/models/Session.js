@@ -31,12 +31,16 @@ class Session {
       query
         .find()
         .then((session) => {
+          console.log("Session from token", session);
           const expiresAt = new Date(session.expiresAt);
           const now = new Date();
           if (now > expiresAt) throw "Invalid Session Token";
           return User.getQuery().findWithId(session.user);
         })
-        .then((user) => resolve(user))
+        .then((user) => {
+          console.log("User from token", user);
+          resolve(user);
+        })
         .catch((err) => reject(err));
     });
   }
