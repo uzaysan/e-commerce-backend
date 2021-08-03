@@ -1,5 +1,4 @@
-import { database } from "../controllers/DatabaseController.js";
-const sessions = database.collection("Session");
+import DatabaseAdapter from "../adapters/DatabaseAdapter.js";
 import Query from "../Query.js";
 import User from "../models/User.js";
 import { generateObjectId } from "../util/ObjectIdUtils.js";
@@ -17,11 +16,17 @@ export default class Session {
   }
 
   save() {
-    return sessions.insertOne(this);
+    return DatabaseAdapter.getCollection(this.getCollectionName()).insertOne(
+      this
+    );
   }
 
   static getQuery() {
-    return new Query("Session");
+    return new Query(this.getCollectionName());
+  }
+
+  static getCollectionName() {
+    return "Session";
   }
 
   static getUserFromToken(token) {

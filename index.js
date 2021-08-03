@@ -3,7 +3,9 @@ import compression from "compression";
 import { Server } from "socket.io";
 
 import mainRouter from "./src/routers/MainRouter.js";
-import { connect, database } from "./src/controllers/DatabaseController.js";
+import DatabaseAdapter from "./src/adapters/DatabaseAdapter.js";
+
+import Product from "./src/models/Product.js";
 
 const app = express();
 const port = 3000;
@@ -14,7 +16,7 @@ app.use(express.json());
 
 app.use("/api", mainRouter);
 
-connect((err) => {
+DatabaseAdapter.connect((err) => {
   if (err) {
     console.log("Failed to connect database!");
     return;
@@ -27,7 +29,9 @@ connect((err) => {
     socket.join(socket.handshake.query.productId);
   });
 
-  const dbStream = database.collection("Product").watch();
+  const dbStream = DatabaseAdapter.getCollection(
+    Product.getCollectionName()
+  ).watch();
   dbStream.on("change", (change) => {
     if (change.operationType === "update") {
       socketio.in(change.documentKey._id).emit("product-update", {

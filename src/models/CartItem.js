@@ -1,6 +1,5 @@
-import { database } from "../controllers/DatabaseController.js";
+import DatabaseAdapter from "../adapters/DatabaseAdapter.js";
 import Query from "../Query.js";
-const cartItems = database.collection("CartItem");
 
 export default class CartItem {
   constructor(item) {
@@ -22,10 +21,18 @@ export default class CartItem {
     const filter = { _id: `${this.item.user}${this.item.product}` };
     const options = { upsert: true };
     const operation = { $set: { ...this.item }, ...this.operation };
-    return cartItems.updateOne(filter, operation, options);
+    return DatabaseAdapter.getCollection(this.getCollectionName()).updateOne(
+      filter,
+      operation,
+      options
+    );
   }
 
   static getQuery() {
-    return new Query("CartItem");
+    return new Query(this.getCollectionName());
+  }
+
+  static getCollectionName() {
+    return "CartItem";
   }
 }

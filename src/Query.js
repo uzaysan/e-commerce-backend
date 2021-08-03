@@ -1,8 +1,8 @@
-import { database } from "./controllers/DatabaseController.js";
+import DatabaseAdapter from "./adapters/DatabaseAdapter.js";
 
 export default class Query {
   constructor(collection) {
-    this.collection = database.collection(collection);
+    this.collection = DatabaseAdapter.getCollection(collection);
     this.query = {};
     this.sort = {};
     this.limit = 100;

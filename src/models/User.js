@@ -1,5 +1,4 @@
-import { database } from "../controllers/DatabaseController.js";
-const users = database.collection("User");
+import DatabaseAdapter from "../adapters/DatabaseAdapter.js";
 import Query from "../Query.js";
 import Auth from "../Auth.js";
 import Session from "../models/Session.js";
@@ -56,7 +55,9 @@ export default class User {
       Auth.encryptPassword(user.password)
         .then((encryptedPassword) => {
           user.password = encryptedPassword;
-          return users.insertOne(user);
+          return DatabaseAdapter.getCollection(
+            this.getCollectionName()
+          ).insertOne(user);
         })
         .then(() => generateSessionToken())
         .then((generatedToken) => {
@@ -78,6 +79,10 @@ export default class User {
   }
 
   static getQuery() {
-    return new Query("User");
+    return new Query(this.getCollectionName());
+  }
+
+  static getCollectionName() {
+    return "User";
   }
 }

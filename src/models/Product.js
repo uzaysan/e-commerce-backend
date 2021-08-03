@@ -1,5 +1,4 @@
-import { database } from "../controllers/DatabaseController.js";
-const products = database.collection("Product");
+import DatabaseAdapter from "../adapters/DatabaseAdapter.js";
 import Query from "../Query.js";
 import { generateObjectId } from "../util/ObjectIdUtils.js";
 
@@ -16,21 +15,34 @@ export default class Product {
 
   save() {
     if (!this._id) {
-      return products.insertOne({ ...this, _id: generateObjectId() });
+      return DatabaseAdapter.getCollection(this.getCollectionName()).insertOne({
+        ...this,
+        _id: generateObjectId(),
+      });
     }
     const filter = { _id: this._id };
     const options = { upsert: false };
     const updateDoc = { $set: { ...this } };
-    return products.updateOne(filter, updateDoc, options);
+    return DatabaseAdapter.getCollection(this.getCollectionName()).updateOne(
+      filter,
+      updateDoc,
+      options
+    );
   }
 
   delete() {
     if (!this._id) throw `Can't delete object without objectId`;
     const query = { _id: this._id };
-    return products.deleteOne(query);
+    return DatabaseAdapter.getCollection(this.getCollectionName()).deleteOne(
+      query
+    );
   }
 
   static getQuery() {
-    return new Query("Product");
+    return new Query(this.getCollectionName());
+  }
+
+  static getCollectionName() {
+    return "Product";
   }
 }
