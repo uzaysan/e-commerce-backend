@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use("/api", mainRouter);
 
-DatabaseAdapter.connect((err) => {
+DatabaseAdapter.connectToDatabase((err) => {
   if (err) {
     console.log("Failed to connect database!");
     return;

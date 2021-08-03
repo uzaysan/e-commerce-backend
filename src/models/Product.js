@@ -8,7 +8,7 @@ export default class Product {
     if (product.title) this.title = product.title;
     if (product.description) this.description = product.description;
     if (product.category) this.category = product.category;
-    if (product.price) this.price = product.price;
+    if (product.price) this.price = parseInt(product.price);
     if (product.image) this.image = product.image;
     if (product.user) this.user = product.user._id;
   }

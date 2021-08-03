@@ -5,6 +5,7 @@ import { S3_BUCKET_NAME, S3_ENDPOINT } from "../../keys.js";
 
 export const uploadFile = (req, res) => {
   const { file } = req;
+  if (!file) throw "no file found!";
   if (!file.mimetype.startsWith("image")) {
     res.status(400).send("File must be image!");
     return;

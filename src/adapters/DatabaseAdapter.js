@@ -5,7 +5,7 @@ const client = new MongoClient(DATABASE_URI);
 export const database = client.db(DATABASE_NAME);
 
 export default class DatabaseAdapter {
-  static connect(callback) {
+  static connectToDatabase(callback) {
     client
       .connect()
       .then(() => {
