@@ -16,17 +16,12 @@ app.use("/api", mainRouter);
 
 connect((err) => {
   if (err) {
-    console.log("error", err);
     console.log("Failed to connect database!");
     return;
   }
   const server = app.listen(port, () => {
     console.log(`Server started at the port ${port}`);
   });
-  handleRealTimeProductChanges(server);
-});
-
-const handleRealTimeProductChanges = (server) => {
   const socketio = new Server(server);
   socketio.on("connection", (socket) => {
     socket.join(socket.handshake.query.productId);
@@ -41,4 +36,4 @@ const handleRealTimeProductChanges = (server) => {
       });
     }
   });
-};
+});

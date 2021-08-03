@@ -4,9 +4,7 @@ import CartItem from "../models/CartItem.js";
 export const addItemToCart = (req, res) => {
   const { body, isLoggedIn, loggedInUser } = req;
   const validatedBody = Validator.cartItemValidator(body);
-  if (!validatedBody.product) {
-    throw `item id is required for this operation`;
-  }
+  if (!validatedBody.product) throw `product is required for this operation`;
   if (!isLoggedIn) {
     res.status(401).send("Unauthorized");
     return;

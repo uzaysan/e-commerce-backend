@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Validator from "../util/Validator.js";
+import MailAdapter from "../adapters/MailAdapter.js";
 
 export const registerController = (req, res) => {
   const { body } = req;
@@ -10,7 +11,16 @@ export const registerController = (req, res) => {
   if (!validatedBody.password) throw "password is required";
   new User(validatedBody)
     .register()
-    .then((result) => res.send(result))
+    .then((result) => {
+      res.send(result);
+      MailAdapter.sendMail(
+        validatedBody.email,
+        `Welcome ${validatedBody.name}`,
+        "Welcome to E-Commerce!"
+      )
+        .then((res) => console.log("Mail result", res))
+        .catch((err) => console.log("Mail err", err));
+    })
     .catch((err) => res.status(500).send(err));
 };
 
