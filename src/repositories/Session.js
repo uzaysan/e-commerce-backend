@@ -1,6 +1,6 @@
 import DatabaseAdapter from "../adapters/DatabaseAdapter.js";
 import Query from "../Query.js";
-import User from "../models/User.js";
+import User from "./User.js";
 import { generateObjectId } from "../util/ObjectIdUtils.js";
 
 const oneYear = 1000 * 60 * 60 * 24 * 365;

@@ -1,4 +1,4 @@
-import Session from "../models/Session.js";
+import Session from "../repositories/Session.js";
 
 export const authCheck = async (req, res, next) => {
   const sessionToken = req.headers["x-session-token"];

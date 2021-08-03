@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 import mainRouter from "./src/routers/MainRouter.js";
 import DatabaseAdapter from "./src/adapters/DatabaseAdapter.js";
 
-import Product from "./src/models/Product.js";
+import Product from "./src/repositories/Product.js";
 
 const app = express();
 const port = 3000;

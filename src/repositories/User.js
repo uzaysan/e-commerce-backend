@@ -1,7 +1,7 @@
 import DatabaseAdapter from "../adapters/DatabaseAdapter.js";
 import Query from "../Query.js";
 import Auth from "../Auth.js";
-import Session from "../models/Session.js";
+import Session from "./Session.js";
 import { generateObjectId } from "../util/ObjectIdUtils.js";
 import { generateSessionToken } from "../util/SessionUtil.js";
 
@@ -11,20 +11,6 @@ export default class User {
     if (user.name) this.name = user.name;
     if (user.email) this.email = user.email;
     if (user.password) this.password = user.password;
-  }
-
-  static async login(email, password) {
-    const query = User.getQuery();
-    query.equalTo("email", email);
-    const user = await query.findOne({
-      projection: { password: 1, name: 1, email: 1 },
-    });
-    console.log("User", user);
-    const isValid = await Auth.comparePasswords(password, user.password);
-    if (!isValid) throw new Error("Invalid credentials");
-    const token = await generateSessionToken();
-    await new Session(token, user).save();
-    return { ...user, sessionToken: token, password: undefined };
   }
 
   async register() {

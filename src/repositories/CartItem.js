@@ -3,7 +3,6 @@ import Query from "../Query.js";
 
 export default class CartItem {
   constructor(item) {
-    console.log("Item", item);
     this.item = {};
     if (item._id) this.item._id = `${item.user}${item.product}`;
     if (item.product) this.item.product = item.product;
@@ -14,7 +13,6 @@ export default class CartItem {
   increment(key, number = 1) {
     if (!this.operation) this.operation = { $inc: {} };
     this.operation.$inc[key] = parseInt(number);
-    console.log("operation", this.operation);
   }
 
   async save() {

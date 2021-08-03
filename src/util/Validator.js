@@ -6,7 +6,7 @@ export default class Validator {
     if (body.description) newBody.description = body.description;
     if (body.category) newBody.category = body.category;
     if (body.price) newBody.price = body.price;
-    if (body.image) newBody._id = body.image;
+    if (body.image) newBody.image = body.image;
     return newBody;
   }
 
