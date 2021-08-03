@@ -17,15 +17,14 @@ export default class CartItem {
     console.log("operation", this.operation);
   }
 
-  save() {
+  async save() {
     const filter = { _id: `${this.item.user}${this.item.product}` };
     const options = { upsert: true };
     const operation = { $set: { ...this.item }, ...this.operation };
-    return DatabaseAdapter.getCollection(this.getCollectionName()).updateOne(
-      filter,
-      operation,
-      options
-    );
+
+    return await DatabaseAdapter.getCollection(
+      CartItem.getCollectionName()
+    ).updateOne(filter, operation, options);
   }
 
   static getQuery() {

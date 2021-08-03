@@ -1,13 +1,13 @@
 export default class Validator {
   static productValidator(body) {
-    return {
-      _id: body._id,
-      title: body.title,
-      description: body.description,
-      category: body.category,
-      price: body.price,
-      image: body.image,
-    };
+    const newBody = {};
+    if (body._id) newBody._id = body._id;
+    if (body.title) newBody.title = body.title;
+    if (body.description) newBody.description = body.description;
+    if (body.category) newBody.category = body.category;
+    if (body.price) newBody.price = body.price;
+    if (body.image) newBody._id = body.image;
+    return newBody;
   }
 
   static userValidator(body) {
@@ -20,11 +20,11 @@ export default class Validator {
   }
 
   static cartItemValidator(body) {
-    return {
-      _id: body._id,
-      product: body.product,
-      count: parseInt(body.count) || 1,
-      user: body.user,
-    };
+    const newBody = {};
+    if (body._id) newBody._id = body._id;
+    if (body.product) newBody.product = body.product;
+    if (body.count) newBody.count = body.count;
+    if (body.user) newBody.user = body.user;
+    return newBody;
   }
 }

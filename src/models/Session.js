@@ -15,10 +15,10 @@ export default class Session {
     ).toISOString();
   }
 
-  save() {
-    return DatabaseAdapter.getCollection(this.getCollectionName()).insertOne(
-      this
-    );
+  async save() {
+    return await DatabaseAdapter.getCollection(
+      Session.getCollectionName()
+    ).insertOne(this);
   }
 
   static getQuery() {
@@ -29,24 +29,13 @@ export default class Session {
     return "Session";
   }
 
-  static getUserFromToken(token) {
-    return new Promise((resolve, reject) => {
-      const query = this.getQuery();
-      query.equalTo("token", token);
-      query
-        .findOne()
-        .then((session) => {
-          console.log("Session from token", session);
-          const expiresAt = new Date(session.expiresAt);
-          const now = new Date();
-          if (now > expiresAt) throw "Invalid Session Token";
-          return User.getQuery().findWithId(session.user);
-        })
-        .then((user) => {
-          console.log("User from token", user);
-          resolve(user);
-        })
-        .catch((err) => reject(err));
-    });
+  static async getUserFromToken(token) {
+    const query = this.getQuery();
+    query.equalTo("token", token);
+    const session = await query.findOne();
+    const expiresAt = new Date(session.expiresAt);
+    const now = new Date();
+    if (now > expiresAt) throw new Error("Invalid Session Token");
+    return await User.getQuery().findWithId(session.user);
   }
 }

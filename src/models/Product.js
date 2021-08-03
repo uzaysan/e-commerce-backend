@@ -13,29 +13,28 @@ export default class Product {
     if (product.user) this.user = product.user._id;
   }
 
-  save() {
+  async save() {
     if (!this._id) {
-      return DatabaseAdapter.getCollection(this.getCollectionName()).insertOne({
-        ...this,
-        _id: generateObjectId(),
-      });
+      return await DatabaseAdapter.getCollection(
+        Product.getCollectionName()
+      ).insertOne({ ...this, _id: generateObjectId() });
     }
+
     const filter = { _id: this._id };
     const options = { upsert: false };
     const updateDoc = { $set: { ...this } };
-    return DatabaseAdapter.getCollection(this.getCollectionName()).updateOne(
-      filter,
-      updateDoc,
-      options
-    );
+
+    return await DatabaseAdapter.getCollection(
+      Product.getCollectionName()
+    ).updateOne(filter, updateDoc, options);
   }
 
-  delete() {
-    if (!this._id) throw `Can't delete object without objectId`;
+  async delete() {
+    if (!this._id) throw new Error(`Can't delete object without objectId`);
     const query = { _id: this._id };
-    return DatabaseAdapter.getCollection(this.getCollectionName()).deleteOne(
-      query
-    );
+    return await DatabaseAdapter.getCollection(
+      Product.getCollectionName()
+    ).deleteOne(query);
   }
 
   static getQuery() {
