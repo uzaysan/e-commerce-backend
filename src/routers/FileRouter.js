@@ -1,10 +1,12 @@
 import express from "express";
 import multer from "multer";
-import { fileController } from "../controllers/FileController.js";
+import { uploadFile, getFile } from "../controllers/FileController.js";
 
 const router = express.Router();
 const upload = multer();
 
-router.post("/upload", upload.single("file"), fileController);
+router.post("/upload", upload.single("file"), uploadFile);
+
+router.get("/:filename", getFile);
 
 export default router;

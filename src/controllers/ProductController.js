@@ -50,7 +50,7 @@ export const getProduct = (req, res) => {
     throw `_id field necessary to get an existing object`;
   }
   let product;
-  getQuery()
+  Product.getQuery()
     .findWithId(params.objectId)
     .then((fetchedProduct) => {
       if (!fetchedProduct) throw "Product doesnt exist!";
