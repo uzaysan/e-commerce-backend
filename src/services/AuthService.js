@@ -1,5 +1,5 @@
 import bcrypt from "@node-rs/bcrypt";
-import { generateSessionToken } from "../util/SessionUtil";
+import { generateSessionToken } from "../util/SessionUtil.js";
 import User from "../repositories/User.js";
 import Session from "../repositories/Session.js";
 

@@ -3,9 +3,12 @@ import Query from "../Query.js";
 import User from "./User.js";
 import { generateObjectId } from "../util/ObjectIdUtils.js";
 
-const oneYear = 1000 * 60 * 60 * 24 * 365;
-
 export default class Session {
+  /**
+   * @constructor
+   * @param {String} token
+   * @param {User} user
+   */
   constructor(token, user) {
     this._id = generateObjectId();
     this.token = token;
@@ -15,20 +18,38 @@ export default class Session {
     ).toISOString();
   }
 
+  /**
+   * @returns {InsertOneResult}
+   */
   async save() {
     return await DatabaseAdapter.getCollection(
       Session.getCollectionName()
     ).insertOne(this);
   }
 
+  /**
+   * @static
+   * @returns {Query} returns a query;
+   */
   static getQuery() {
     return new Query(this.getCollectionName());
   }
 
+  /**
+   *
+   * @returns {String} returns collection name;
+   */
   static getCollectionName() {
     return "Session";
   }
 
+  /**
+   * takes a session token as param.
+   * and returns the associated User
+   *
+   * @param {String} token
+   * @returns {User}
+   */
   static async getUserFromToken(token) {
     const query = this.getQuery();
     query.equalTo("token", token);

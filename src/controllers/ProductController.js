@@ -1,88 +1,45 @@
-import Product from "../repositories/Product.js";
-import User from "../repositories/User.js";
 import ProductService from "../services/ProductService.js";
 
-import Validator from "../util/Validator.js";
-
 export default class ProductController {
-  static async addProduct(req, res) {
-    const { body, isLoggedIn, loggedInUser } = req;
+  static async addProductController(req, res) {
+    const { body, loggedInUser, errors } = req;
     try {
-      const validatedBody = Validator.productValidator(body);
-      if (validatedBody._id)
-        throw `_id field is auto generated and must be removed from request body!`;
-      if (!validatedBody.title) throw "title field is necessary";
-      if (!validatedBody.description) throw "description field is necessary";
-      if (!validatedBody.category) throw "category field is necessary";
-      if (!validatedBody.price) throw "price field is necessary";
-      if (!validatedBody.image) throw "image field is necessary";
-
-      if (!isLoggedIn) {
-        res.status(401).send("Unauthorized");
-        return;
-      }
-      res.send(await ProductService.insert(validatedBody, loggedInUser));
+      if (errors) throw new Error({ errors: errors });
+      res.send(await ProductService.insert(body, loggedInUser));
     } catch (err) {
-      res.status(500).send(err);
+      res.status(400).send(err.toString());
     }
   }
 
-  static async editProduct(req, res) {
-    const { body, params, isLoggedIn, loggedInUser } = req;
-    const validatedBody = Validator.productValidator(body);
+  static async editProductController(req, res) {
+    const { body, params, loggedInUser, errors } = req;
     try {
-      if (!params.objectId)
-        throw `_id field necessary to edit an existing object`;
-      if (
-        !validatedBody.title &&
-        !validatedBody.description &&
-        !validatedBody.category &&
-        !validatedBody.price &&
-        !validatedBody.image
-      )
-        throw "You have to pass atleast one ield to edit product";
-
-      if (!isLoggedIn) {
-        res.status(401).send("Unauthorized");
-        return;
-      }
-
+      if (errors) throw new Error({ errors: errors });
       res.send(
-        await ProductService.update(
-          params.objectId,
-          validatedBody,
-          loggedInUser
-        )
+        await ProductService.update(params.objectId, body, loggedInUser)
       );
     } catch (err) {
-      res.status(500).send(err);
+      res.status(400).send(err.toString());
     }
   }
 
-  static async getProduct(req, res) {
-    const { params } = req;
-    if (!params.objectId) throw `_id field necessary to get an existing object`;
+  static async getProductController(req, res) {
+    const { params, errors } = req;
     try {
+      if (errors) throw new Error({ errors: errors });
       res.send(await ProductService.get(params.objectId));
     } catch (err) {
-      res.status(500).send(err);
+      res.status(400).send(err.toString());
     }
   }
 
-  static async deleteProduct(req, res) {
-    const { params, isLoggedIn, loggedInUser } = req;
+  static async deleteProductController(req, res) {
+    const { params, loggedInUser, errors } = req;
     try {
-      if (!params.objectId)
-        throw `_id field necessary to edit an existing object`;
-
-      if (!isLoggedIn) {
-        res.status(401).send("Unauthorized");
-        return;
-      }
-
+      if (errors) throw new Error({ errors: errors });
       res.send(await ProductService.delete(params.objectId, loggedInUser));
     } catch (err) {
-      res.status(500).send(err);
+      res.status(400).send(err.toString());
     }
   }
 }

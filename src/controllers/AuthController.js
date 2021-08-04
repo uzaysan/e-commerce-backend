@@ -1,36 +1,29 @@
-import Validator from "../util/Validator.js";
 import MailAdapter from "../adapters/MailAdapter.js";
 import AuthService from "../services/AuthService.js";
 
 export default class AuthController {
   static async registerController(req, res) {
-    const { body } = req;
-    const validatedBody = Validator.userValidator(body);
+    const { body, errors } = req;
     try {
-      if (!validatedBody.name) throw "name is required";
-      if (!validatedBody.email) throw "email is required";
-      if (!validatedBody.password) throw "password is required";
-
-      res.send(await AuthService.register(validatedBody));
+      if (errors) throw new Error({ errors: errors });
+      res.send(await AuthService.register(body));
       MailAdapter.sendMail(
-        validatedBody.email,
-        `Welcome ${validatedBody.name}`,
+        body.email,
+        `Welcome ${body.name}`,
         "Welcome to E-Commerce!"
       );
     } catch (err) {
-      res.status(500).send(err);
+      res.status(500).send(err.toString());
     }
   }
 
   static async loginController(req, res) {
-    const { body } = req;
+    const { body, errors } = req;
     try {
-      if (!body.email) throw "email is required";
-      if (!body.password) throw "password is required";
-
+      if (errors) throw new Error({ errors: errors });
       res.send(await AuthService.login(body.email, body.password));
     } catch (err) {
-      res.status(500).send(err);
+      res.status(500).send(err.toString());
     }
   }
 }

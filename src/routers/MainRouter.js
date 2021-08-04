@@ -7,9 +7,9 @@ import userRouter from "../routers/UserRouter.js";
 import cartItemRouter from "../routers/CartItemRouter.js";
 import fileRouter from "../routers/FileRouter.js";
 
-import { authCheck } from "../middlewares/AuthCheck.js";
+import AuthValidator from "../middlewares/AuthValidator.js";
 
-router.use(authCheck);
+router.use(AuthValidator.authCheck);
 
 router.get("/", (req, res) => {
   res.status(404).send();

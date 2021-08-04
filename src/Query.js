@@ -46,6 +46,8 @@ export default class Query {
     const newOptions = {
       projection: options.projection || this.projection,
     };
-    return await this.collection.findOne(query, newOptions);
+    const document = await this.collection.findOne(query, newOptions);
+    if (document) return document;
+    else throw new Error("Object doesn't exists");
   }
 }
