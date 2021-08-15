@@ -8,14 +8,14 @@ export default class FileController {
     const { file } = req;
     if (!file) throw "no file found!";
     if (!file.mimetype.startsWith("image")) {
-      res.status(400).send("File must be image!");
+      res.status(400).send({ err: "File must be image!" });
       return;
     }
     try {
       const fileData = await FileAdapter.uploadFile(file.buffer, file.mimetype);
       res.send(fileData);
     } catch (err) {
-      res.status(500).send({ error: err });
+      res.status(500).send({ err: err.toString() });
     }
   }
 

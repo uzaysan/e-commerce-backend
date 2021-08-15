@@ -9,23 +9,23 @@ export default class ProductService {
 
   static async update(objectId, body, user) {
     const product = await Product.getQuery().findWithId(objectId);
-    if (product.user !== user._id) throw "Unauthorized";
+    if (product.user !== user._id) throw new Error("Unauthorized");
     await new Product({ ...body, _id: objectId }).save();
     return { ...product, ...body, user: user };
   }
 
   static async get(objectId) {
     const product = await Product.getQuery().findWithId(objectId);
-    if (!product) throw "Product doesnt exist!";
+    if (!product) throw new Error(`Product ${objectId} doesnt exist!`);
     const user = await User.getQuery().findWithId(product.user);
     return { ...product, user: user };
   }
 
   static async delete(objectId, user) {
     const product = await Product.getQuery().findWithId(objectId);
-    if (!product) throw "Object doesnt exists!";
-    if (product.user !== user._id) throw "Unauthorized";
+    if (!product) throw new Error("Object doesnt exists!");
+    if (product.user !== user._id) throw new Error("Unauthorized");
     await new Product({ _id: objectId }).delete();
-    return "Item deleted";
+    return { result: "Item deleted" };
   }
 }

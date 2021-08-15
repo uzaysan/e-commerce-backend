@@ -17,6 +17,13 @@ const transporter = nodemailer.createTransport({
 });
 
 export default class MailAdapter {
+  /**
+   *
+   * @param {String} to
+   * @param {String} subject
+   * @param {String} mail
+   * @returns {Promise}
+   */
   static async sendMail(to, subject, mail) {
     return await transporter.sendMail({
       from: `"E-Commerce" <${SMTP_USERNAME}>`,

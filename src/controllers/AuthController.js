@@ -13,7 +13,7 @@ export default class AuthController {
         "Welcome to E-Commerce!"
       );
     } catch (err) {
-      res.status(500).send(err.toString());
+      res.status(500).send({ err: err.toString() });
     }
   }
 
@@ -23,7 +23,7 @@ export default class AuthController {
       if (errors) throw new Error({ errors: errors });
       res.send(await AuthService.login(body.email, body.password));
     } catch (err) {
-      res.status(500).send(err.toString());
+      res.status(500).send({ err: err.toString() });
     }
   }
 }

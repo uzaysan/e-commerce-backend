@@ -3,7 +3,7 @@ import CartItem from "../repositories/CartItem.js";
 export default class CartItemService {
   static async addItemToCart(body, user) {
     await new CartItem({ ...body, user: user }).save();
-    return "items added to cart";
+    return { result: "items added to cart" };
   }
 
   static async getItems(body, user) {

@@ -14,6 +14,13 @@ const s3Storage = new AWS.S3({
 });
 
 export default class FileAdapter {
+  /**
+   * Accepts file buffer and file mime type.
+   * Uploads file to AWS S3 Storage.
+   * @param {Buffer} fileData
+   * @param {String} mimeType
+   * @returns {Object}
+   */
   static async uploadFile(fileData, mimeType) {
     return await new Promise((resolve, reject) => {
       const filename = `${generateFileName()}.${mimeType.split("/")[1]}`;
@@ -29,6 +36,11 @@ export default class FileAdapter {
     });
   }
 
+  /**
+   * Deletes the file from AWS S3 Storage.
+   * @param {String} fileName
+   * @returns
+   */
   static async deleteFile(fileName) {
     return await new Promise((resolve, reject) => {
       const params = {

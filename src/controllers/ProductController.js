@@ -7,10 +7,11 @@ export default class ProductController {
       if (errors) throw new Error({ errors: errors });
       res.send(await ProductService.insert(body, loggedInUser));
     } catch (err) {
-      res.status(400).send(err.toString());
+      res.status(400).send({ err: err.toString() });
     }
   }
 
+  /** Product Controller that responsible for editing an existing product */
   static async editProductController(req, res) {
     const { body, params, loggedInUser, errors } = req;
     try {
@@ -19,7 +20,7 @@ export default class ProductController {
         await ProductService.update(params.objectId, body, loggedInUser)
       );
     } catch (err) {
-      res.status(400).send(err.toString());
+      res.status(400).send({ err: err.toString() });
     }
   }
 
@@ -29,7 +30,7 @@ export default class ProductController {
       if (errors) throw new Error({ errors: errors });
       res.send(await ProductService.get(params.objectId));
     } catch (err) {
-      res.status(400).send(err.toString());
+      res.status(400).send({ err: err.toString() });
     }
   }
 
@@ -39,7 +40,7 @@ export default class ProductController {
       if (errors) throw new Error({ errors: errors });
       res.send(await ProductService.delete(params.objectId, loggedInUser));
     } catch (err) {
-      res.status(400).send(err.toString());
+      res.status(400).send({ err: err.toString() });
     }
   }
 }

@@ -3,7 +3,7 @@ import express from "express";
 const router = express.Router();
 
 import CartItemController from "../controllers/CartItemController.js";
-import CartItemValidator from "../middlewares/CartItemValidator.js";
+import CartItemValidator from "../validators/CartItemValidator.js";
 
 router.post(
   "/",

@@ -7,7 +7,7 @@ export default class CartItemController {
       if (errors) throw new Error({ errors: errors });
       res.send(await CartItemService.addItemToCart(body, loggedInUser));
     } catch (err) {
-      res.status(500).send(err.toString());
+      res.status(500).send({ err: err.toString() });
     }
   }
 
@@ -17,7 +17,7 @@ export default class CartItemController {
       if (errors) throw new Error({ errors: errors });
       res.send(await CartItemService.getItems(body, loggedInUser));
     } catch (err) {
-      res.status(500).send(err.toString());
+      res.status(500).send({ err: err.toString() });
     }
   }
 }

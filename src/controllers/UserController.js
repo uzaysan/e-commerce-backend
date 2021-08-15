@@ -8,7 +8,7 @@ export default class UserController {
       res.send(await UserService.get(params.objectId));
     } catch (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.status(500).send({ err: err.toString() });
     }
   }
 }
