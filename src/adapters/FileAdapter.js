@@ -39,7 +39,7 @@ export default class FileAdapter {
   /**
    * Deletes the file from AWS S3 Storage.
    * @param {String} fileName
-   * @returns
+   * @returns {Promise}
    */
   static async deleteFile(fileName) {
     return await new Promise((resolve, reject) => {

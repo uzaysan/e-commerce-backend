@@ -12,8 +12,7 @@ export default class FileController {
       return;
     }
     try {
-      const fileData = await FileAdapter.uploadFile(file.buffer, file.mimetype);
-      res.send(fileData);
+      res.send(await FileAdapter.uploadFile(file.buffer, file.mimetype));
     } catch (err) {
       res.status(500).send({ err: err.toString() });
     }

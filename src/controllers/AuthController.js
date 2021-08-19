@@ -2,6 +2,7 @@ import MailAdapter from "../adapters/MailAdapter.js";
 import AuthService from "../services/AuthService.js";
 
 export default class AuthController {
+  /** Controller for user registers */
   static async registerController(req, res) {
     const { body, errors } = req;
     try {
@@ -17,6 +18,7 @@ export default class AuthController {
     }
   }
 
+  /** Controller for login */
   static async loginController(req, res) {
     const { body, errors } = req;
     try {

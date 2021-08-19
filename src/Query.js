@@ -3,6 +3,7 @@ import DatabaseAdapter from "./adapters/DatabaseAdapter.js";
 export default class Query {
   constructor(collection) {
     this.collection = DatabaseAdapter.getCollection(collection);
+    this.collectionName = collection;
     this.query = {};
     this.sort = {};
     this.limit = 100;
@@ -38,7 +39,7 @@ export default class Query {
     const newOptions = {
       projection: options.projection || this.projection,
     };
-    return this.collection.findOne(this.query, newOptions);
+    return await this.collection.findOne(this.query, newOptions);
   }
 
   async findWithId(_id, options = {}) {
@@ -48,6 +49,6 @@ export default class Query {
     };
     const document = await this.collection.findOne(query, newOptions);
     if (document) return document;
-    else throw new Error("Object doesn't exists");
+    else throw new Error(`${this.collectionName} ${_id} doesn't exists`);
   }
 }

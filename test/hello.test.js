@@ -9,5 +9,6 @@ describe("Hello Neo! test", () => {
   it("returns Hello Neo! for the default endpoint with GET method", async () => {
     const response = await chai.request(app).get("/");
     expect(response.text).to.equal("Hello Neo!");
+    expect(response.status).to.equal(200);
   });
 });
