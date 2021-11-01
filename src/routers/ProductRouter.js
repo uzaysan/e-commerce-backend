@@ -17,6 +17,8 @@ router.put(
   ProductController.editProductController
 );
 
+router.get("/all", ProductController.getAllProductController);
+
 router.get(
   "/:objectId",
   ProductValidator.getProductValidator,

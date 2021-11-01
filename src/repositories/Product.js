@@ -11,6 +11,11 @@ export default class Product {
     if (product.price) this.price = parseInt(product.price);
     if (product.image) this.image = product.image;
     if (product.user) this.user = product.user._id;
+
+    const titleWords = product.title ? product.title.split(/\s+/) : [];
+    this.keywords = titleWords.concat(
+      product.description ? product.description.split(/\s+/) : []
+    );
   }
 
   async save() {

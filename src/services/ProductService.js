@@ -28,4 +28,26 @@ export default class ProductService {
     await new Product({ _id: objectId }).delete();
     return { result: "Item deleted" };
   }
+
+  static async search(param) {
+    const query = ProductService.getQuery();
+    query.containedIn("keywords", [param]);
+    const products = await query.find();
+    for (const product of products) {
+      const user = User.getQuery().findWithId(product.user);
+      product.user = user;
+    }
+    return products;
+  }
+
+  static async getAll() {
+    const query = ProductService.getQuery();
+    query.limit(500);
+    const products = await query.find();
+    for (const product of products) {
+      const user = User.getQuery().findWithId(product.user);
+      product.user = user;
+    }
+    return products;
+  }
 }

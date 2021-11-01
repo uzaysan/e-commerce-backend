@@ -34,6 +34,16 @@ export default class ProductController {
     }
   }
 
+  static async getAllProductController(req, res) {
+    const { errors } = req;
+    try {
+      if (errors) throw new Error({ errors: errors });
+      res.send(await ProductService.getAll());
+    } catch (err) {
+      res.status(400).send({ err: err.toString() });
+    }
+  }
+
   static async deleteProductController(req, res) {
     const { params, loggedInUser, errors } = req;
     try {

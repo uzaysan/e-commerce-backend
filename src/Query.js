@@ -25,6 +25,10 @@ export default class Query {
     return this;
   }
 
+  containedIn(key, value) {
+    this.query[key] = { $in: value };
+  }
+
   async find(options = {}) {
     const newOptions = {
       sort: options.sort || this.sort,
